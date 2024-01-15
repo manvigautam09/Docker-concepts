@@ -1,0 +1,41 @@
+---------------------
+Create Network
+---------------------
+
+docker network create goals-net
+
+---------------------
+Run MongoDB Container
+---------------------
+
+docker run --name mongodb --network goals-net -e MONGO_INITDB_ROOT_USERNAME=manvi -e MONGO_INITDB_ROOT_PASSWORD=Testsecret  -v data:/data/db --rm -d  mongo
+
+---------------------
+Build Node API Image
+---------------------
+
+docker build -t goals-node .
+
+---------------------
+Run Node API Container
+---------------------
+
+docker run --name goals-backend --rm -d -p 80:80 --network goals-net -v /Users/manvisharma/Projects/Docker/multi-container-app-docker/backend:/app -v logs:/app/logs -v /app/node_modules -e MONGODB_USERNAME=manvi -e MONGODB_PASSWORD=Testsecret goals-node
+
+---------------------
+Build React SPA Image
+---------------------
+
+docker build -t goals-react .
+
+---------------------
+Run React SPA Container
+---------------------
+
+docker run -v /Users/manvisharma/Projects/Docker/multi-container-app-docker/frontend/src:/app/src --rm -p 3000:3000 -it --name goals-frontend --network goals-net goals-react
+
+---------------------
+Stop all Containers
+---------------------
+
+docker stop mongodb goals-backend goals-frontend
