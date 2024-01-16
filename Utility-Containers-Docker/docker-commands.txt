@@ -1,0 +1,31 @@
+------------------------------
+Run node Utility Container
+------------------------------
+docker run -it -d node
+docker exec -it romantic_noyce npm init
+
+OR
+
+docker run -it node npm init
+
+------------------------------
+Creating Utility Container
+------------------------------
+docker build -t node-util .
+docker run -it -v /Users/manvisharma/Projects/Docker/Docker-concepts/Utility-Containers-Docker:/app  node-util npm init
+
+docker build -t mynpm .
+docker run -it -v /Users/manvisharma/Projects/Docker/Docker-concepts/Utility-Containers-Docker:/app  mynpm init
+docker run -it -v /Users/manvisharma/Projects/Docker/Docker-concepts/Utility-Containers-Docker:/app  mynpm install
+docker run -it -v /Users/manvisharma/Projects/Docker/Docker-concepts/Utility-Containers-Docker:/app  mynpm install express --save
+
+OR
+Make compose file and Run command
+
+docker-compose run npm init
+docker-compose run npm install
+docker-compose run npm install express --save
+
+OR
+
+docker-compose run --rm npm init
