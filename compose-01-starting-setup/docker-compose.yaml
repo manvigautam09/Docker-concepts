@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - data:/data/db
+    # env_file: // If We want to move our environment variables to a file
+    #   - ./env/mongo.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=manvi
+      - MONGO_INITDB_ROOT_PASSWORD=Testsecret
+  backend:
+    build: ./backend
+    # build:  // If we want to build the image from the dockerfile
+    #   context: ./backend
+    #   dockerfile: Dockerfile.dev
+    #   args:
+    #     some_arg: some_value
+    ports:
+      - "80:80"
+    # env_file:
+    #   - ./env/backend.env
+    environment:
+      - MONGODB_USERNAME=manvi
+      - MONGODB_PASSWORD=Testsecret
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
+volumes:
+  data:
+  logs:
+# By default the services are in the same network and can communicate with each other and containers are also deleted once we close the service
+# The command docker-compose up -d will run the containers in the detached mode, and docker-compose up will run the containers in the foreground
+# The command docker-compose down will stop and delete the containers, docker-compose down -v to also delete the volumes
+# docker-compose up --build to build the images again
+# docker-compose logs -f to see the logs of the containers
+# docker-compose build to only build the images and not run the containers
